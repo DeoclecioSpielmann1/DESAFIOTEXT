@@ -55,7 +55,31 @@
 </table><!-- Implementar Lista de Alunos -->
 
     <script>
-         <!-- Implementar back-end -->
+         let db;
+
+        // Abrir (ou criar) um banco de dados chamado "AlunosDB" com versão 1
+        const request = indexedDB.open("AlunosDB", 1);
+
+        // Evento chamado quando o banco de dados precisa ser atualizado (criação da estrutura)
+        request.onupgradeneeded = function (event) {
+            const db = event.target.result; // Obtém a referência ao banco de dados
+
+            // Se o object store "alunos" não existir, ele será criado
+            if (!db.objectStoreNames.contains("alunos")) {
+                db.createObjectStore("alunos", { keyPath: "id", autoIncrement: true });
+            }
+        };
+
+        // Evento chamado quando o banco de dados é aberto com sucesso
+        request.onsuccess = function (event) {
+            db = event.target.result; // Armazena a referência ao banco de dados
+            listarAlunos(); // Chama a função para listar os alunos já cadastrados
+        };
+
+        // Evento chamado se houver um erro ao abrir o banco de dados
+        request.onerror = function () {
+            console.error("Erro ao abrir o banco de dados.");
+        };<!-- Implementar back-end -->
     </script>
 
 </body>
